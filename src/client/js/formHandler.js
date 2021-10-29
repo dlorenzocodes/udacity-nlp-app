@@ -1,11 +1,11 @@
+import { updateUi } from './updateUI.js'
 
 let formData = {};
 const urlField = document.querySelector('#url');
 
-function postURl(event){
-    event.preventDefault();
+async function postURl(){
     formData = { articleURl: urlField.value}
-    fetch('http://localhost:8082/entry', {
+    const response = await fetch('http://localhost:8082/entry', {
         method: 'POST',
         credentials: 'same-origin',
         headers: {
@@ -13,9 +13,10 @@ function postURl(event){
         },
         body: JSON.stringify(formData),
     })
-        .then(res => res.json())
-        .then(data => console.log(data))
-        .catch(error => console.log(error))
+    
+    const data = await response.json();
+    console.log(data);
+    updateUi();
 }
 
 export { postURl };
