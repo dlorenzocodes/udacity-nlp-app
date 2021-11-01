@@ -1,22 +1,19 @@
 import { updateUi } from './updateUI.js'
 
-let formData = {};
-const urlField = document.querySelector('#url');
+const inputURl = document.querySelector('#url');
 
-async function postURl(){
-    formData = { articleURl: urlField.value}
+export async function postURl(){
+    console.log('Post URl');
+
+    const dataObj = {articleURl: inputURl.value}
+
     const response = await fetch('http://localhost:8082/entry', {
         method: 'POST',
         credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData),
-    })
-    
-    const data = await response.json();
-    console.log(data);
+        body: JSON.stringify(dataObj)
+    });
     updateUi();
 }
-
-export { postURl };

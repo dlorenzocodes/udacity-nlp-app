@@ -2,40 +2,44 @@
 const path = require('path');
 const express = require('express');
 const app = express();
+const fetch = require('node-fetch');
 const dotenv = require('dotenv');
 dotenv.config();
-const fetch = require('node-fetch');
 
-
-app.use(express.json()); 
+app.use(express.json());
 app.use(express.static('dist'));
 
 app.get('/', (req, res) => {
-    res.sendFile('dist/index.html');
+    res.sendFile('dist/index.js');
 });
 
-let projectData = {};
+let data = {};
 
-app.post('/entry', (req, res) => {
-    projectData = req.body,
-    res.send(projectData)
-    console.log(projectData.articleURl);
-    console.log('Post has been received...');
+app.post('/entry', async (req, res) => {
+    const url = req.body.articleURl;
+    console.log(url);
+    console.log('Url received');
+
+    const baseURl = `https://api.meaningcloud.com/sentiment-2.1?`;
+    const apikey = process.env.API_KEY;
+
+    console.log('Starting Api call ...');
+    const response = await fetch(`${baseURl}?key=${apikey}&url=${url}&lang=en&model=general`);
+    try {
+        const json = await response.json()
+        console.log(json)
+        data = json;
+        res.send(data)
+    }   catch(error) {
+        console.log('Server POST error', error)
+    }
 });
 
-app.get('/urlData', async (req, res) => {
-    const baseURl = 'https://api.meaningcloud.com/sentiment-2.1';
-    const inputURl = projectData.articleURl;
-    console.log(inputURl);
-    const apiKey = process.env.API_KEY;
 
-    const response = await fetch(`${baseURl}key=${apiKey}&url=${inputURl}&leng=en`)
-    const data = await response.json();
-    console.log(data);
-    console.log('Post 2 has been received...');
+app.get('/getData', (req, res) => {
     res.send(data);
+    console.log('Getting data...');
 });
-
 
 
 const port = process.env.PORT || 8082;
