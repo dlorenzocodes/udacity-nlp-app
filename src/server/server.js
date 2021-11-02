@@ -22,9 +22,11 @@ app.post('/entry', async (req, res) => {
 
     const baseURl = `https://api.meaningcloud.com/sentiment-2.1?`;
     const apikey = process.env.API_KEY;
+    console.log(apikey);
 
     console.log('Starting Api call ...');
-    const response = await fetch(`${baseURl}?key=${apikey}&url=${url}&lang=en&model=general`);
+    console.log(`${baseURl}key=${apikey}&url=${url}&lang=en`);
+    const response = await fetch(`${baseURl}key=${apikey}&url=${url}&lang=en`);
     try {
         const json = await response.json()
         console.log(json)

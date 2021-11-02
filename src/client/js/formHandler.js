@@ -1,12 +1,15 @@
 import { updateUi } from './updateUI.js'
+import { validateURL } from './urlValidation.js'
 
 const inputURl = document.querySelector('#url');
 
 export async function postURl(){
     console.log('Post URl');
 
-    const dataObj = {articleURl: inputURl.value}
+    const validation = validateURL(inputURl.value)
+    if(validation === false) return;
 
+    const dataObj = {articleURl: inputURl.value}
     const response = await fetch('http://localhost:8082/entry', {
         method: 'POST',
         credentials: 'same-origin',
